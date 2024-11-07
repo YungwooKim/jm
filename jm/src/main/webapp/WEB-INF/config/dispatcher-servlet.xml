@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+   http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+   http://www.springframework.org/schema/mvc
+   http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+   http://www.springframework.org/schema/context
+   http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+ 
+  	<mvc:annotation-driven />
+
+  	<context:component-scan base-package="com" />
+
+ 	<bean id="handlerMapping"
+  	class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+    <property name="order" value="1" /> 
+ 	</bean>
+  
+	<!-- CONTEXT 설정 내용 -->
+	<bean id="LoginInterceptor" class="com.app.LoginInterceptor" />
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<!-- 모든 URL 요청 mvc 인터셉터를 거치게 하도록 정의 -->
+			<mvc:mapping path="/**"/>
+			<!--mvc 인터셉터를 거치지 않고 예외 시킬 URL 요청들 정의 -->
+			<mvc:exclude-mapping path="/loginchk"/>
+			<mvc:exclude-mapping path="/logout"/>
+			<!--mvc 인터셉터 컨트롤러 빈객체 정의 -->
+			<ref bean="LoginInterceptor"/>
+		</mvc:interceptor>
+	 </mvc:interceptors>
+  
+  <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="prefix" value="/WEB-INF/views/" />
+    <property name="suffix" value=".jsp" />
+  </bean>
+	
+  <mvc:resources location="/resources/" mapping="/resources/**"></mvc:resources>
+	
+</beans>
